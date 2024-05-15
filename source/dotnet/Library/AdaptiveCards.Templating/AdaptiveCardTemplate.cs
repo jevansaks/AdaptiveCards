@@ -2,9 +2,9 @@
 // Licensed under the MIT License.
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Newtonsoft.Json;
 using System;
 using System.Collections;
+using System.Text.Json;
 
 namespace AdaptiveCards.Templating
 {
@@ -54,7 +54,7 @@ namespace AdaptiveCards.Templating
         {
             if (jsonTemplate != null)
             {
-                jsonTemplateString = (jsonTemplate is string) ? jsonTemplate as string : JsonConvert.SerializeObject(jsonTemplate);
+                jsonTemplateString = (jsonTemplate is string) ? jsonTemplate as string : JsonSerializer.Serialize(jsonTemplate);
 
                 AntlrInputStream stream = new AntlrInputStream(jsonTemplateString);
                 ITokenSource lexer = new AdaptiveCardsTemplateLexer(stream);
@@ -105,7 +105,7 @@ namespace AdaptiveCards.Templating
                 }
                 else
                 {
-                    rootJsonData = JsonConvert.SerializeObject(context.Root);
+                    rootJsonData = JsonSerializer.Serialize(context.Root);
                 }
             }
 
@@ -118,7 +118,7 @@ namespace AdaptiveCards.Templating
                 }
                 else
                 {
-                    hostJsonData = JsonConvert.SerializeObject(context.Host);
+                    hostJsonData = JsonSerializer.Serialize(context.Host);
                 }
             }
 
