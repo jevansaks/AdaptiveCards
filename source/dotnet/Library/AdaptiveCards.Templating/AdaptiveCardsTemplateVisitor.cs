@@ -76,7 +76,14 @@ namespace AdaptiveCards.Templating
             /// <param name="hostDataContext">optional host data context</param>
             private void Init(JsonNode jtoken, JsonNode rootDataContext, JsonNode hostDataContext)
             {
-                AELMemory = new JsonNodeMemory(jtoken);
+                if (jtoken is JsonObject)
+                {
+                    AELMemory = new JsonNodeMemory(jtoken);
+                }
+                else
+                {
+                    AELMemory = new JsonNodeMemory(new JsonObject());
+                }
 
                 token = jtoken;
                 RootDataContext = rootDataContext;

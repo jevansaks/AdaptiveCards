@@ -1,11 +1,11 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
 using AdaptiveExpressions.Properties;
 using AdaptiveExpressions;
 using System.Diagnostics;
 using System;
 using AdaptiveExpressions.Memory;
 using System.Collections;
+using System.Text.Json.Nodes;
 
 namespace AdaptiveCards.Templating.Test
 {
@@ -11493,10 +11493,10 @@ namespace AdaptiveCards.Templating.Test
         
         public static void AssertJsonEqual(string jsonExpected, string jsonActual)
         {
-            var expected = JObject.Parse(jsonExpected);
-            var actual = JObject.Parse(jsonActual);
+            var expected = JsonNode.Parse(jsonExpected);
+            var actual = JsonNode.Parse(jsonActual);
 
-            Assert.IsTrue(JToken.DeepEquals(expected, actual), "JSON wasn't the same.\n\nExpected: " + expected.ToString() + "\n\nActual: " + actual.ToString());
+            Assert.IsTrue(JsonNode.DeepEquals(expected, actual), "JSON wasn't the same.\n\nExpected: " + expected.ToString() + "\n\nActual: " + actual.ToString());
         }
 
         [TestMethod]
@@ -14168,8 +14168,8 @@ namespace AdaptiveCards.Templating.Test
                 }
             }";
 
-            JToken token = JToken.Parse(jsonData);
-            var (value, error) = new ValueExpression("${person.firstName}man").TryGetValue(token as JObject);
+            JsonNode token = JsonNode.Parse(jsonData);
+            var (value, error) = new ValueExpression("${person.firstName}man").TryGetValue(token as JsonNode);
             Assert.AreEqual("Superman", value);
         }
 
@@ -14180,8 +14180,8 @@ namespace AdaptiveCards.Templating.Test
             ""$index"": 0
             }";
 
-            JToken token = JToken.Parse(jsonData);
-            var (value, error) = new ValueExpression("${$index}").TryGetValue(token as JObject);
+            JsonNode token = JsonNode.Parse(jsonData);
+            var (value, error) = new ValueExpression("${$index}").TryGetValue(token as JsonNode);
             Assert.AreEqual("0", value);
         }
 
@@ -14192,9 +14192,9 @@ namespace AdaptiveCards.Templating.Test
             ""numberPropertyValue"": ""20.12345""
             }";
 
-            JToken token = JToken.Parse(jsonData);
+            JsonNode token = JsonNode.Parse(jsonData);
             
-            var (value, error) = new ValueExpression("${if(isMatch(numberPropertyValue, '[-+]?[0-9]*\\.?[0-9]+'), formatNumber(float(numberPropertyValue), 2), numberPropertyValue)}").TryGetValue(token as JObject);
+            var (value, error) = new ValueExpression("${if(isMatch(numberPropertyValue, '[-+]?[0-9]*\\.?[0-9]+'), formatNumber(float(numberPropertyValue), 2), numberPropertyValue)}").TryGetValue(token as JsonNode);
             Assert.AreEqual("20.12", value);
         }
 
@@ -14211,10 +14211,10 @@ namespace AdaptiveCards.Templating.Test
     }
   ]
 }";
-            JToken token = JToken.Parse(jsonData);
+            JsonNode token = JsonNode.Parse(jsonData);
             string unboundString = "${foreach(foreach(indicesAndValues(LineItems), x, concat('cardContent', x.index)), y, json(concat('{ \"elementId\": \"', y, '\", \"isVisible\": true}')))}";
             var exp = new ValueExpression(unboundString);
-            var (value, error) = exp.TryGetValue(token as JObject);
+            var (value, error) = exp.TryGetValue(token as JsonNode);
             Expression exp2 = Expression.Parse(unboundString.Substring(2, unboundString.Length - 3));
 
             var options = new Options
@@ -14232,7 +14232,7 @@ namespace AdaptiveCards.Templating.Test
             ""attachment"": false 
             }";
 
-            JToken token = JToken.Parse(jsonData);
+            JsonNode token = JsonNode.Parse(jsonData);
             var expr = Expression.Parse("attachment == true");
             var result =  expr.TryEvaluate(token); 
             Assert.IsNull(result.error);
@@ -14252,11 +14252,11 @@ namespace AdaptiveCards.Templating.Test
 
             Stopwatch.StartNew();
             var beginTime0 = Stopwatch.GetTimestamp();
-            JToken token = JToken.Parse(jsonData);
+            JsonNode token = JsonNode.Parse(jsonData);
             var endTime0 = Stopwatch.GetTimestamp();
             Console.WriteLine("time0 took: " + (endTime0 - beginTime0));
             var beginTime1 = Stopwatch.GetTimestamp();
-            var (value, error) = new ValueExpression("${string(person.age)}").TryGetValue(token as JObject);
+            var (value, error) = new ValueExpression("${string(person.age)}").TryGetValue(token as JsonNode);
             var endTime1 = Stopwatch.GetTimestamp();
             Console.WriteLine("time1 took: " + (endTime1 - beginTime1));
             Assert.AreEqual("79", value);
@@ -14273,9 +14273,9 @@ namespace AdaptiveCards.Templating.Test
                 }
             }";
 
-            JToken token = JToken.Parse(jsonData);
+            JsonNode token = JsonNode.Parse(jsonData);
 
-            var memory = new SimpleObjectMemory(token);
+            var memory = new JsonNodeMemory(token);
             var (value, error) = new ValueExpression("${string(person.age)}").TryGetValue(memory);
             Assert.AreEqual("79", value);
         }
@@ -14290,8 +14290,8 @@ namespace AdaptiveCards.Templating.Test
               }
             }";
 
-            JToken token = JToken.Parse(jsonData);
-            var memory = new SimpleObjectMemory(token);
+            JsonNode token = JsonNode.Parse(jsonData);
+            var memory = new JsonNodeMemory(token);
             memory.SetValue("$data", token);
             var (value, error) = new ValueExpression("${$data.person.firstName}").TryGetValue(memory);
             Assert.AreEqual("Andrew", value);
@@ -14300,11 +14300,11 @@ namespace AdaptiveCards.Templating.Test
         [TestMethod]
         public void TestMemoryInterfaceJValue()
         {
-            JValue jval = new JValue("a");
-            JObject jobj = new JObject();
+            JsonValue jval = JsonValue.Create("a");
+            JsonNode jobj = new JsonObject();
             jobj["$data"] = jval;
 
-            var memory = new SimpleObjectMemory(jobj);
+            var memory = new JsonNodeMemory(jobj);
             var (value, error) = new ValueExpression("${$data}").TryGetValue(memory);
             Assert.AreEqual("a", value);
         }
@@ -14316,11 +14316,11 @@ namespace AdaptiveCards.Templating.Test
             ""person"":[""Andrew"", ""Leader""]
             }";
 
-            JToken token = JToken.Parse(jsonData);
-            var memory = new SimpleObjectMemory(token);
+            JsonNode token = JsonNode.Parse(jsonData);
+            var memory = new JsonNodeMemory(token);
             memory.SetValue("$data", token);
             var (value, error) = new ValueExpression("${$data.person}").TryGetValue(memory);
-            Assert.AreEqual("Andrew", JToken.Parse(value as string)[0]);
+            Assert.AreEqual("Andrew", JsonNode.Parse(value as string)[0].ToString());
         }
 
         [TestMethod]
