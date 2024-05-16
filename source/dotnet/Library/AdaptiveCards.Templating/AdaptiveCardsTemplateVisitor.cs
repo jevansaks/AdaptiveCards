@@ -64,7 +64,7 @@ namespace AdaptiveCards.Templating
             public DataContext(string text, JsonNode rootDataContext, JsonNode hostDataContext = null)
             {
                 // TODO: Old code did 'disable date parsing handling', STJ has no replacement.
-                var jtoken = JsonSerializer.Deserialize<JsonNode>(text);
+                var jtoken = JsonNode.Parse(text);
                 Init(jtoken, rootDataContext, hostDataContext);
             }
 
@@ -127,7 +127,7 @@ namespace AdaptiveCards.Templating
                 // parse and save host context
                 try
                 {
-                    host = JsonSerializer.Deserialize<JsonNode>(hostData);
+                    host = JsonNode.Parse(hostData);
                 }
                 catch (JsonException innerException)
                 {
@@ -140,7 +140,7 @@ namespace AdaptiveCards.Templating
                 // set data as root data context
                 try
                 {
-                    root = JsonSerializer.Deserialize<JsonNode>(data);
+                    root = JsonNode.Parse(data);
                     PushDataContext(data, root);
                 }
                 catch (JsonException innerException)
@@ -208,7 +208,7 @@ namespace AdaptiveCards.Templating
                 }
                 else
                 {
-                    var serializedValue = JsonSerializer.Serialize(value);
+                    var serializedValue = parentDataContext.AELMemory.JsonSerializeToString(value);
                     dataContext.Push(new DataContext(serializedValue, parentDataContext.RootDataContext, parentDataContext.HostDataContext));
                 }
             }
@@ -699,7 +699,7 @@ namespace AdaptiveCards.Templating
             var (value, error) = exp.TryEvaluate(data, options);
             if (error == null)
             {
-                string s = JsonSerializer.Serialize(value);
+                string s = data.JsonSerializeToString(value);
                 // after serialization, the double quotes should be removed
                 if (value is string && !isTemplatedString)
                 {

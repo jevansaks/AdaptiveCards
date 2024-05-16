@@ -6,11 +6,13 @@ using System;
 using AdaptiveExpressions.Memory;
 using System.Collections;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace AdaptiveCards.Templating.Test
 {
     [TestClass]
-    public sealed class TestTemplate
+    public sealed partial class TestTemplate
     {
         [TestMethod]
         public void TestPerf()
@@ -10892,7 +10894,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
             string cardJson = transformer.Expand(context);
             var parseResult = AdaptiveCard.FromJson(cardJson);
@@ -10929,7 +10931,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -10970,7 +10972,7 @@ namespace AdaptiveCards.Templating.Test
      + "]" + "}";
 
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
-            string cardJson = transformer.Expand(null);
+            string cardJson = transformer.Expand((string)null);
 
             AssertJsonEqual(@"{
     ""type"": ""AdaptiveCard"",
@@ -11103,7 +11105,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             try
@@ -11134,7 +11136,7 @@ namespace AdaptiveCards.Templating.Test
             }";
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
 
-            string cardJson = transformer.Expand(null);
+            string cardJson = transformer.Expand((string)null);
 
             AssertJsonEqual(@"{
     ""type"": ""AdaptiveCard"",
@@ -11166,7 +11168,7 @@ namespace AdaptiveCards.Templating.Test
 
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
 
-            string cardJson = transformer.Expand(null);
+            string cardJson = transformer.Expand((string)null);
 
             AssertJsonEqual(@"{
     ""type"" : ""AdaptiveCard"",
@@ -11198,7 +11200,7 @@ namespace AdaptiveCards.Templating.Test
             }";
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
 
-            string cardJson = transformer.Expand(null);
+            string cardJson = transformer.Expand((string)null);
 
             AssertJsonEqual(@"{
     ""type"": ""AdaptiveCard"",
@@ -11290,7 +11292,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -11341,7 +11343,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -11391,7 +11393,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -11439,7 +11441,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             try
@@ -11477,7 +11479,7 @@ namespace AdaptiveCards.Templating.Test
 
             try
             {
-                string cardJson = transformer.Expand(null);
+                string cardJson = transformer.Expand((string)null);
                 Assert.Fail("There should be an exception");
             }
             catch (ArgumentNullException e)
@@ -11626,7 +11628,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer2 = new AdaptiveCardTemplate(expectedString);
             var context = new EvaluationContext()
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -11898,7 +11900,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(testString);
             var context = new EvaluationContext
             {
-                Root = templateData
+                RootString = templateData
             };
 
             string cardJson = transformer.Expand(context);
@@ -12434,7 +12436,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(testString);
             var context = new EvaluationContext
             {
-                Root = templateData
+                RootString = templateData
             };
 
             string cardJson = transformer.Expand(context);
@@ -12623,7 +12625,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -12678,7 +12680,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -12754,7 +12756,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -12830,7 +12832,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext()
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -12877,7 +12879,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext()
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -13067,7 +13069,7 @@ namespace AdaptiveCards.Templating.Test
             AssertJsonEqual(expectedString, cardJson);
         }
         
-        class Data
+        internal class Data
         { 
             public string title { get; set; }
             public int IntTemplateProperty { get; internal set; }
@@ -13086,7 +13088,7 @@ namespace AdaptiveCards.Templating.Test
 
 
             var template = new AdaptiveCardTemplate(cardJson);
-            string st = template.Expand(dt);
+            string st = template.Expand(JsonSerializer.Serialize(dt, TestSerializerContext.Default.Data));
             try
             {
                 var jsonOb = Newtonsoft.Json.JsonConvert.DeserializeObject(st);
@@ -13113,7 +13115,8 @@ namespace AdaptiveCards.Templating.Test
                 "]}";
 
             var template = new AdaptiveCardTemplate(cardJson);
-            string st = template.Expand(new { stringWithJson = @"{""number1"":23}" });
+            var data = new Data2 { stringWithJson = @"{""number1"":23}" };
+            string st = template.Expand(JsonSerializer.Serialize(data, TestSerializerContext.Default.Data2));
             try
             {
                 var jsonOb = Newtonsoft.Json.JsonConvert.DeserializeObject(st);
@@ -13154,7 +13157,7 @@ namespace AdaptiveCards.Templating.Test
             };
 
             var template = new AdaptiveCardTemplate(cardJson);
-            string st = template.Expand(dt);
+            string st = template.Expand(JsonSerializer.Serialize(dt, TestSerializerContext.Default.Data));
             AssertJsonEqual(expectedJson, st);
         }
 
@@ -13175,7 +13178,7 @@ namespace AdaptiveCards.Templating.Test
             };
 
             var template = new AdaptiveCardTemplate(cardJson);
-            string st = template.Expand(dt);
+            string st = template.Expand(JsonSerializer.Serialize(dt, TestSerializerContext.Default.Data));
 
             AssertJsonEqual(expectedJson, st);
         }
@@ -13197,7 +13200,7 @@ namespace AdaptiveCards.Templating.Test
             };
 
             var template = new AdaptiveCardTemplate(cardJson);
-            string st = template.Expand(dt);
+            string st = template.Expand(JsonSerializer.Serialize(dt, TestSerializerContext.Default.Data));
 
             AssertJsonEqual(expectedJson, st);
         }
@@ -13218,7 +13221,7 @@ namespace AdaptiveCards.Templating.Test
 
             var context = new EvaluationContext()
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             var template = new AdaptiveCardTemplate(cardJson);
@@ -13243,7 +13246,7 @@ namespace AdaptiveCards.Templating.Test
 
             var context = new EvaluationContext()
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             var template = new AdaptiveCardTemplate(cardJson);
@@ -13304,7 +13307,7 @@ namespace AdaptiveCards.Templating.Test
             };
 
             var template = new AdaptiveCardTemplate(cardJson);
-            string st = template.Expand(dt);
+            string st = template.Expand(JsonSerializer.Serialize(dt, TestSerializerContext.Default.Data));
 
             Assert.AreEqual(expectedJson, st);
         }
@@ -13371,7 +13374,7 @@ namespace AdaptiveCards.Templating.Test
             };
 
             var template = new AdaptiveCardTemplate(cardJson);
-            string st = template.Expand(dt);
+            string st = template.Expand(JsonSerializer.Serialize(dt, TestSerializerContext.Default.Data));
 
             Assert.AreEqual(expectedJson, st);
 
@@ -13465,7 +13468,7 @@ namespace AdaptiveCards.Templating.Test
 
             var context = new EvaluationContext()
             {
-                Root =
+                RootString =
                 @"{
                   ""Title"": ""Issue with "",
                   ""FormMetaData"": {
@@ -13506,6 +13509,11 @@ namespace AdaptiveCards.Templating.Test
             string st = template.Expand(context);
             AssertJsonEqual(expectedJson, st);
         }
+
+        internal class Data2
+        {
+            public string stringWithJson { get; set; }
+        }
     }
     [TestClass]
     public sealed class TestRootKeyword
@@ -13539,7 +13547,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -13597,7 +13605,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -13651,7 +13659,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -13717,8 +13725,8 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = rootData,
-                Host = hostData
+                RootString = rootData,
+                HostString = hostData
             };
 
             string cardJson = transformer.Expand(context);
@@ -13800,8 +13808,8 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = rootJsonData,
-                Host = hostJsonData
+                RootString = rootJsonData,
+                HostString = hostJsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -13871,8 +13879,8 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = rootJsonData,
-                Host = hostJsonData
+                RootString = rootJsonData,
+                HostString = hostJsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -13925,7 +13933,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -13971,7 +13979,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -14029,7 +14037,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -14083,7 +14091,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
 
             string cardJson = transformer.Expand(context);
@@ -14346,7 +14354,7 @@ namespace AdaptiveCards.Templating.Test
             AdaptiveCardTemplate transformer = new AdaptiveCardTemplate(jsonTemplate);
             var context = new EvaluationContext
             {
-                Root = jsonData
+                RootString = jsonData
             };
             Expression.Functions.Add("stringFormat", (args) =>
             {
@@ -14369,6 +14377,14 @@ namespace AdaptiveCards.Templating.Test
                     ""text"": ""My name is Andrew Leader""
                 }]
             }", cardJson);
-        }        
+        }
+    }
+
+
+    [JsonSerializable(typeof(TestTemplate.Data))]
+    [JsonSerializable(typeof(TestTemplate.Data2))]
+    internal partial class TestSerializerContext : JsonSerializerContext
+    {
+
     }
 }
