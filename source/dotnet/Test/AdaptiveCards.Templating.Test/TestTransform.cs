@@ -13126,8 +13126,8 @@ namespace AdaptiveCards.Templating.Test
                 "\"body\": [" + 
                 "{" + 
                 "\"id\": \"stringWithJson\"," + 
-                "\"type\": \"TextBlock\"," + 
-                @"""text"": ""String With JSON - \""{\\\""number1\\\"":23}\""""," + 
+                "\"type\": \"TextBlock\"," +
+                @"""text"": ""String With JSON - \u0022{\\u0022number1\\u0022:23}\u0022""," + 
                 "\"wrap\": true" + 
                 "}" + 
                 "]}";

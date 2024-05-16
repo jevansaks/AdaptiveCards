@@ -109,6 +109,8 @@ namespace AdaptiveCards.Templating
         /// </example>
         /// <seealso cref="EvaluationContext"/>
         /// <returns>json as string</returns>
+        [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Calls to Serialize will only happen for non-AOT callers")]
+        [UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "Calls to Serialize will only happen for non-AOT callers")]
         public string Expand(EvaluationContext context, Func<string, object> nullSubstitutionOption = null)
         {
             if (parseTree == null)
@@ -119,13 +121,27 @@ namespace AdaptiveCards.Templating
             string rootJsonData = "";
             if (context?.Root != null)
             {
-                rootJsonData = context.Root.ToString();
+                if (context.Root is string json)
+                {
+                    rootJsonData = json;
+                }
+                else
+                {
+                    rootJsonData = JsonSerializer.Serialize(context.Root);
+                }
             }
 
             string hostJsonData = "";
             if (context?.Host != null)
             {
-                hostJsonData = context.Host.ToString();
+                if (context.Host is string json)
+                {
+                    hostJsonData = json;
+                }
+                else
+                {
+                    hostJsonData = JsonSerializer.Serialize(context.Host);
+                }
             }
 
             AdaptiveCardsTemplateVisitor eval = new AdaptiveCardsTemplateVisitor(nullSubstitutionOption, rootJsonData, hostJsonData);
